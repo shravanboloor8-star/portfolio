@@ -1,17 +1,552 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import ContactForm from "../components/ContactForm.jsx";
+import FloatingProfile from "../components/FloatingProfile.jsx";
+import ScrollReveal from "../components/ScrollReveal.jsx";
+import MetricsSection from "../components/MetricsSection.jsx";
+import TechWall from "../components/TechWall.jsx";
+import ExperienceSection from "../components/ExperienceSection.jsx";
+import WhatIBuild from "../components/WhatIBuild.jsx";
+import Testimonials from "../components/Testimonials.jsx";
+import ProjectsContainer from "../components/ProjectsContainer.jsx";
+import { fetchProjects, fetchExperience, trackPageView } from "../lib/supabase";
+import { SITE_CONFIG } from "../lib/constants";
 
+// Track page view
+try {
+  await trackPageView("/");
+} catch (e) {
+  console.error("Failed tracking page view:", e);
+}
+
+const dbProjects = await fetchProjects();
+const experiences = await fetchExperience();
+
+const projects = dbProjects.map((proj) => {
+  // Extract tagline and snippet description
+  let tagline = "";
+  let description = proj.description || "";
+  if (proj.description && proj.description.includes(" - ")) {
+    const parts = proj.description.split(" - ");
+    tagline = parts[0].trim();
+    description = parts.slice(1).join(" - ").trim();
+  }
+
+  // Assign logo emojis based on project name
+  let logo = "💻";
+  const nameLower = proj.name.toLowerCase();
+  if (nameLower.includes("cake")) logo = "🍰";
+  else if (nameLower.includes("healthymart")) logo = "🏪";
+  else if (nameLower.includes("skypay")) logo = "☁️";
+  else if (nameLower.includes("bioguid")) logo = "🧬";
+  else if (nameLower.includes("karya")) logo = "💼";
+  else if (nameLower.includes("starlly")) logo = "🛍️";
+  else if (nameLower.includes("resume")) logo = "📄";
+  else if (nameLower.includes("zoho")) logo = "🔌";
+  else if (nameLower.includes("pdf")) logo = "📄";
+  else if (nameLower.includes("job")) logo = "🔍";
+  else if (nameLower.includes("profile")) logo = "👤";
+  else if (nameLower.includes("messaging")) logo = "💬";
+  else if (nameLower.includes("kpi")) logo = "📊";
+  else if (nameLower.includes("kenya") || nameLower.includes("koura"))
+    logo = "🩺";
+
+  let color = "from-sky-500/5 to-blue-500/5 hover:border-sky-500/20";
+  let glowColor = "rgba(14, 165, 233, 0.15)";
+
+  if (proj.category === "fullstack") {
+    color = "from-purple-500/5 to-indigo-500/5 hover:border-purple-500/20";
+    glowColor = "rgba(139, 92, 246, 0.15)";
+  } else if (proj.category === "backend") {
+    color = "from-slate-500/5 to-slate-700/5 hover:border-slate-500/20";
+    glowColor = "rgba(100, 116, 139, 0.15)";
+  } else if (proj.category === "ai") {
+    color = "from-pink-500/5 to-rose-500/5 hover:border-pink-500/20";
+    glowColor = "rgba(244, 63, 94, 0.15)";
+  } else if (proj.category === "web3") {
+    color = "from-amber-500/5 to-orange-500/5 hover:border-amber-500/20";
+    glowColor = "rgba(245, 158, 11, 0.15)";
+  }
+
+  return {
+    ...proj,
+    logo,
+    color,
+    glowColor,
+    tagline:
+      tagline ||
+      (proj.category
+        ? `${proj.category.charAt(0).toUpperCase() + proj.category.slice(1)} Platform`
+        : "Product Platform"),
+    description: description,
+  };
+});
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title={SITE_CONFIG.title} description={SITE_CONFIG.description}>
+  <div class="aurora-container min-h-screen">
+    <!-- Aurora background nodes -->
+    <div class="aurora-bg">
+      <div class="aurora-glow aurora-glow-1"></div>
+      <div class="aurora-glow aurora-glow-2"></div>
+      <div class="aurora-glow aurora-glow-3"></div>
+      <div class="dots-grid"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section
+      id="home"
+      class="relative min-h-[90vh] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 z-10"
+    >
+      <div
+        class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
+      >
+        <!-- Hero Text (Left) -->
+        <div class="lg:col-span-7 space-y-8 text-left">
+          <ScrollReveal client:load delay={0.1} direction="up">
+            <h1
+              class="text-4xl sm:text-6xl font-display font-extrabold tracking-tight leading-[1.1] text-slate-900 dark:text-slate-100 max-w-2xl mb-6"
+            >
+              Building Digital Products
+              <span
+                class="block bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-500 dark:from-primary-400 dark:via-secondary-400 dark:to-accent-400 bg-clip-text text-transparent"
+              >
+                That Scale.
+              </span>
+            </h1>
+          </ScrollReveal>
+
+          <ScrollReveal client:load delay={0.3} direction="up">
+            <p
+              class="text-lg sm:text-xl text-slate-700 dark:text-slate-350 font-semibold mb-3 max-w-xl font-display"
+            >
+              Frontend Engineer specializing in React, TanStack, Bubble, and
+              Product Development.
+            </p>
+          </ScrollReveal>
+
+          <ScrollReveal client:load delay={0.5} direction="up">
+            <p
+              class="text-slate-650 dark:text-slate-400 text-sm sm:text-base max-w-xl leading-relaxed mb-8"
+            >
+              I build fintech, healthcare, and commerce applications with a
+              focus on performance, user experience, and scalable architecture.
+            </p>
+          </ScrollReveal>
+
+          <!-- Hero Buttons -->
+          <ScrollReveal client:load delay={0.7} direction="up">
+            <div class="flex flex-wrap gap-4 pt-2">
+              <a
+                href="#projects"
+                class="px-6 py-3.5 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-500 hover:to-secondary-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform active:scale-95 inline-flex items-center gap-2"
+              >
+                View Projects
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </a>
+              <a
+                href="#contact"
+                class="px-6 py-3.5 border border-slate-200 hover:border-slate-350 bg-white text-slate-700 rounded-lg font-semibold hover:shadow-sm dark:border-slate-800 dark:hover:border-slate-700 dark:bg-slate-900/40 dark:text-slate-300 transition-all duration-300 inline-flex items-center gap-2 active:scale-95"
+              >
+                Contact Me
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </a>
+            </div>
+          </ScrollReveal>
+        </div>
+
+        <!-- Hero Avatar Card (Right) -->
+        <div class="lg:col-span-5 w-full flex items-center justify-center">
+          <ScrollReveal client:load delay={0.4} direction="right">
+            <FloatingProfile client:load />
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metrics Section (directly below Hero) -->
+    <section
+      class="relative py-12 px-4 sm:px-6 lg:px-8 border-y border-slate-200 dark:border-slate-900/60 bg-slate-100/30 dark:bg-slate-955/20 z-10"
+    >
+      <div class="max-w-6xl mx-auto">
+        <MetricsSection client:visible />
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section
+      id="projects"
+      class="relative py-24 px-4 sm:px-6 lg:px-8 z-10 bg-gradient-to-b from-slate-100 to-slate-200/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 border-y border-slate-200/50 dark:border-slate-800/50 overflow-hidden"
+    >
+      <!-- Glow Orbs for background depth -->
+      <div
+        class="absolute top-1/4 left-0 -translate-x-1/2 w-96 h-96 rounded-full bg-primary-500/5 dark:bg-primary-500/10 blur-3xl pointer-events-none"
+      >
+      </div>
+      <div
+        class="absolute bottom-1/4 right-0 translate-x-1/2 w-96 h-96 rounded-full bg-secondary-500/5 dark:bg-secondary-500/10 blur-3xl pointer-events-none"
+      >
+      </div>
+
+      <div class="max-w-6xl mx-auto relative z-10">
+        <ScrollReveal client:visible direction="up">
+          <div class="text-center space-y-4 mb-20 mb-20">
+            <h2
+              class="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-slate-900 dark:text-dark-text-primary"
+            >
+              Projects
+            </h2>
+            <p
+              class="text-base sm:text-lg text-slate-600 dark:text-dark-text-secondary max-w-2xl mx-auto"
+            >
+              Platforms, companies, and applications where I have built scalable
+              frontend and full-stack solutions.
+            </p>
+          </div>
+        </ScrollReveal>
+
+        <!-- Projects with Category Filtering -->
+        {
+          projects.length > 0 ? (
+            <ProjectsContainer client:visible projects={projects}>
+              {projects.map((project, idx) => (
+                <div
+                  data-project-type={project.Type}
+                  class={project.Type === "Client" ? "" : "hidden"}
+                >
+                  <ScrollReveal client:visible delay={idx * 0.1} direction="up">
+                    <ProjectCard project={project} />
+                  </ScrollReveal>
+                </div>
+              ))}
+            </ProjectsContainer>
+          ) : (
+            <ScrollReveal client:visible direction="up">
+              <div class="text-center py-16 p-8 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-955/50 shadow-sm dark:shadow-none mt-16">
+                <p class="text-slate-500 dark:text-slate-400 text-base">
+                  No active projects found. Connect your Supabase instance to
+                  begin fetching records dynamically.
+                </p>
+              </div>
+            </ScrollReveal>
+          )
+        }
+      </div>
+    </section>
+
+    <!-- Technology Wall Section -->
+    <section
+      id="skills"
+      class="relative py-24 px-4 sm:px-6 lg:px-8 bg-slate-100/30 dark:bg-slate-955/20 border-y border-slate-200 dark:border-slate-900/60 z-10"
+    >
+      <div class="max-w-6xl mx-auto space-y-16">
+        <ScrollReveal client:visible direction="up">
+          <div class="text-center space-y-4 mb-20 mb-20">
+            <h2
+              class="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 dark:text-slate-100"
+            >
+              Technology Wall
+            </h2>
+            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              My engineering stack spanning client, server, databases, no-code,
+              and utilities.
+            </p>
+          </div>
+        </ScrollReveal>
+        <TechWall client:visible />
+      </div>
+    </section>
+
+    <!-- What I Build Section -->
+    <section class="relative py-24 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-6xl mx-auto space-y-16">
+        <ScrollReveal client:visible direction="up">
+          <div class="text-center space-y-4 mb-20">
+            <h2
+              class="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 dark:text-slate-100"
+            >
+              What I Build
+            </h2>
+            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              My core specializations for digital interfaces and transaction
+              engines.
+            </p>
+          </div>
+        </ScrollReveal>
+        <WhatIBuild client:visible />
+      </div>
+    </section>
+
+    <!-- Work Experience Section -->
+    <section
+      id="experience"
+      class="relative py-24 px-4 sm:px-6 lg:px-8 bg-slate-100/30 dark:bg-slate-955/20 border-y border-slate-200 dark:border-slate-900/60 z-10"
+    >
+      <div class="max-w-4xl mx-auto space-y-16">
+        <ScrollReveal client:visible direction="up">
+          <div class="text-center space-y-4 mb-20">
+            <h2
+              class="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 dark:text-slate-100"
+            >
+              Engineering Timeline
+            </h2>
+            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              Chronology of my professional software engineering contracts and
+              co-founder roles.
+            </p>
+          </div>
+        </ScrollReveal>
+        <ExperienceSection client:visible experiences={experiences} />
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <!-- <section class="relative py-24 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-6xl mx-auto space-y-16">
+        <ScrollReveal client:visible direction="up">
+          <div class="text-center space-y-4 mb-20">
+            <h2
+              class="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 dark:text-slate-100"
+            >
+              Client & Peer Testimonials
+            </h2>
+            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              Feedback from co-founders, managers, and collaborators.
+            </p>
+          </div>
+        </ScrollReveal>
+        <Testimonials client:visible />
+      </div>
+    </section> -->
+
+    <!-- Contact Section -->
+    <section
+      id="contact"
+      class="relative py-24 px-4 sm:px-6 lg:px-8 bg-slate-100/30 dark:bg-slate-955/20 border-t border-slate-200 dark:border-slate-900/60 z-10"
+    >
+      <div class="max-w-6xl mx-auto space-y-16">
+        <ScrollReveal client:visible direction="up">
+          <div class="text-center space-y-4 mb-20">
+            <h2
+              class="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 dark:text-slate-100"
+            >
+              Contact Workspace
+            </h2>
+            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              Let's connect on full-time engineering projects or remote
+              co-founder opportunities.
+            </p>
+          </div>
+        </ScrollReveal>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- Quick Contact details (Left) -->
+          <div class="lg:col-span-5">
+            <ScrollReveal client:visible direction="left">
+              <div class="space-y-8 text-left">
+                <div class="space-y-4">
+                  <h3
+                    class="text-xl font-bold font-display text-slate-900 dark:text-slate-100"
+                  >
+                    Get in touch
+                  </h3>
+                  <p
+                    class="text-slate-655 dark:text-slate-400 text-sm leading-relaxed"
+                  >
+                    Have an inquiry? Feel free to drop a message. I typically
+                    respond to all emails within 24 hours.
+                  </p>
+                </div>
+
+                <div class="space-y-4">
+                  <!-- Email -->
+                  <a
+                    href={`mailto:${SITE_CONFIG.email}`}
+                    class="flex items-center gap-4 p-4 rounded-xl border border-slate-200 hover:border-slate-350 bg-white hover:bg-slate-50/50 dark:border-slate-200/5 dark:bg-slate-900/30 dark:hover:border-slate-800 shadow-sm transition-all duration-300 group"
+                  >
+                    <div
+                      class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:scale-105 transition-transform shrink-0"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p
+                        class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold"
+                      >
+                        Email
+                      </p>
+                      <p
+                        class="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:group-hover:text-primary-450 hover:text-primary-600 transition-colors"
+                      >
+                        {SITE_CONFIG.email}
+                      </p>
+                    </div>
+                  </a>
+
+                  <!-- Phone -->
+                  <a
+                    href={`tel:${SITE_CONFIG.phone}`}
+                    class="flex items-center gap-4 p-4 rounded-xl border border-slate-200 hover:border-slate-350 bg-white hover:bg-slate-50/50 dark:border-slate-200/5 dark:bg-slate-900/30 dark:hover:border-slate-800 shadow-sm transition-all duration-300 group"
+                  >
+                    <div
+                      class="w-10 h-10 rounded-lg bg-secondary-500/10 flex items-center justify-center text-secondary-600 dark:text-secondary-400 group-hover:scale-105 transition-transform shrink-0"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p
+                        class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold"
+                      >
+                        Phone
+                      </p>
+                      <p
+                        class="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:group-hover:text-secondary-450 hover:text-secondary-600 transition-colors"
+                      >
+                        {SITE_CONFIG.phone}
+                      </p>
+                    </div>
+                  </a>
+
+                  <!-- Location -->
+                  <div
+                    class="flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-200/5 bg-white dark:bg-slate-900/30 shadow-sm"
+                  >
+                    <div
+                      class="w-10 h-10 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-600 dark:text-accent-400 shrink-0"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        ></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p
+                        class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold"
+                      >
+                        Location & Timezone
+                      </p>
+                      <p
+                        class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                      >
+                        {SITE_CONFIG.location} ({SITE_CONFIG.timezone})
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Availability Status Card -->
+                <div
+                  class="p-6 rounded-2xl border border-slate-200 dark:border-slate-200/5 bg-white dark:bg-slate-900/30 shadow-sm hover:border-slate-350 dark:hover:border-slate-800 transition-all duration-300 space-y-4"
+                >
+                  <div
+                    class="flex items-center gap-2 text-[10px] font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-widest select-none"
+                  >
+                    <span
+                      class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+                    ></span>
+                    Available For
+                  </div>
+                  <ul
+                    class="space-y-2.5 text-sm text-slate-600 dark:text-slate-350"
+                  >
+                    <li class="flex items-center gap-2">
+                      <span
+                        class="text-primary-600 dark:text-primary-400 font-bold"
+                        >•</span
+                      > Full-Time Roles
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <span
+                        class="text-primary-600 dark:text-primary-400 font-bold"
+                        >•</span
+                      > Freelance Projects
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <span
+                        class="text-primary-600 dark:text-primary-400 font-bold"
+                        >•</span
+                      > Consulting
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+
+          <!-- Contact form (Right) -->
+          <div class="lg:col-span-7">
+            <ScrollReveal client:visible direction="right">
+              <div
+                class="bg-white dark:bg-slate-900/30 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-200/5 shadow-sm hover:shadow-md dark:hover:border-slate-800 transition-all duration-500"
+              >
+                <ContactForm client:load />
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,383 @@
+---
+import "../styles/global.css";
+import { SITE_CONFIG, NAVIGATION } from "../lib/constants";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = SITE_CONFIG.title, description = SITE_CONFIG.description } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>
+      {
+        title === SITE_CONFIG.title
+          ? `${SITE_CONFIG.name} | ${title}`
+          : `${title} | ${SITE_CONFIG.name}`
+      }
+    </title>
+    <meta name="description" content={description} />
+
+    <!-- OpenGraph SEO -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={SITE_CONFIG.url} />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Force light mode on document element -->
+    <script is:inline>
+      document.documentElement.classList.remove("dark");
+    </script>
+    <style>
+      @keyframes progress-fill {
+        0% {
+          transform: scaleX(0);
+        }
+        100% {
+          transform: scaleX(1);
+        }
+      }
+      .progress-bar-fill {
+        animation: progress-fill 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans transition-colors duration-300 antialiased overflow-x-hidden"
+  >
+    <!-- Premium Loader -->
+    <div
+      id="loading-screen"
+      class="fixed inset-0 z-[100] bg-slate-50 flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out select-none"
+    >
+      <div class="flex flex-col items-center gap-6">
+        <div
+          class="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-extrabold shadow-[0_0_35px_rgba(139,92,246,0.15)] animate-pulse-slow"
+        >
+          <img
+            src="shravan_profile.png"
+            alt="shravan_profile"
+            class="w-full h-full rounded-full animate-rotate"
+          />
+        </div>
+        <p
+          class="text-[10px] font-bold tracking-widest text-slate-500 font-display uppercase animate-pulse"
+        >
+          Loading Portfolio...
+        </p>
+        <div class="w-48 h-[2px] bg-slate-200 rounded-full overflow-hidden">
+          <div
+            class="progress-bar-fill w-full h-full bg-gradient-to-r from-primary-500 to-secondary-500 origin-left"
+          >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium Sticky Navbar -->
+    <header
+      id="main-nav"
+      class="fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out border-b border-transparent bg-transparent h-20 flex items-center"
+    >
+      <div
+        class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between"
+      >
+        <!-- Logo -->
+        <a
+          href="/"
+          class="flex items-center gap-2.5 font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-slate-100 hover:scale-105 transition-transform select-none"
+        >
+          <img
+            src="/logo.png"
+            alt="Shravan Boloor Logo"
+            class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800"
+          />
+          <span>SB</span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-8">
+          {
+            NAVIGATION.map((item) => (
+              <a
+                href={item.href}
+                class="nav-link text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-300"
+                data-section={item.href.replace("/#", "")}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+
+        <!-- Right actions -->
+        <div class="hidden md:flex items-center gap-4">
+          <a
+            href="/Shravan_Boloor_Resume.pdf"
+            download="Shravan_Boloor_Resume.pdf"
+            class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-500 hover:to-secondary-500 rounded-lg hover:shadow-lg transition-all duration-300 transform active:scale-95 inline-flex items-center shrink-0"
+          >
+            Download Resume
+          </a>
+        </div>
+
+        <!-- Mobile Menu Trigger -->
+        <div class="flex items-center gap-4 md:hidden">
+          <button
+            id="mobile-menu-btn"
+            class="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+            aria-label="Toggle menu"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Dropdown -->
+      <div
+        id="mobile-menu"
+        class="hidden absolute top-full left-0 w-full border-b border-slate-200 dark:border-slate-900 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl px-4 py-6 space-y-4 shadow-lg"
+      >
+        {
+          NAVIGATION.map((item) => (
+            <a
+              href={item.href}
+              class="block text-sm font-semibold text-slate-505 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors py-2 border-b border-slate-100 dark:border-slate-900/50"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <div class="pt-4">
+          <a
+            href="/Shravan_Boloor_Resume.pdf"
+            download="Shravan_Boloor_Resume.pdf"
+            class="w-full text-center block px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-500 hover:to-secondary-500 rounded-lg hover:shadow-lg transition-all duration-300 transform active:scale-95 inline-flex items-center justify-center"
+          >
+            Download Resume
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="border-t border-slate-200 dark:border-slate-900 bg-white/50 dark:bg-slate-955/20 py-12 px-4 relative z-10"
+    >
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3
+            class="font-display font-bold text-lg text-slate-900 dark:text-slate-100 mb-2"
+          >
+            {SITE_CONFIG.name}
+          </h3>
+          <p
+            class="text-sm text-slate-600 dark:text-slate-450 leading-relaxed max-w-sm"
+          >
+            {SITE_CONFIG.title}
+          </p>
+        </div>
+        <div>
+          <h3
+            class="font-display font-semibold text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4"
+          >
+            Quick Links
+          </h3>
+          <ul class="space-y-2">
+            {
+              NAVIGATION.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="text-sm text-slate-550 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-300"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <h3
+            class="font-display font-semibold text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4"
+          >
+            Contact
+          </h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">
+            {SITE_CONFIG.location}
+          </p>
+          <a
+            href={`mailto:${SITE_CONFIG.email}`}
+            class="text-sm text-slate-650 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors block mb-2"
+            >{SITE_CONFIG.email}</a
+          >
+          <p class="text-sm text-slate-500">Timezone: {SITE_CONFIG.timezone}</p>
+        </div>
+      </div>
+      <div
+        class="max-w-6xl mx-auto border-t border-slate-200 dark:border-slate-900 mt-8 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4"
+      >
+        <p>
+          &copy; {new Date().getFullYear()}
+          {SITE_CONFIG.name}. All rights reserved.
+        </p>
+        <div class="flex items-center gap-4">
+          <a
+            href={SITE_CONFIG.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="transition-all duration-300 hover:scale-105 opacity-80 hover:opacity-100 block"
+            aria-label="GitHub"
+          >
+            <img src="/github.png" alt="GitHub" class="w-5 h-5 object-contain" />
+          </a>
+          <a
+            href={SITE_CONFIG.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="transition-all duration-300 hover:scale-105 opacity-80 hover:opacity-100 block"
+            aria-label="LinkedIn"
+          >
+            <img src="/linkedIn.png" alt="LinkedIn" class="w-5 h-5 object-contain" />
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Interactive navigation controls script -->
+    <script>
+      // Force page scroll to top on load/refresh
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+
+      // Scroll state navbar toggle
+      const nav = document.getElementById("main-nav");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 30) {
+          nav?.classList.add(
+            "bg-white/80",
+            "dark:bg-slate-955/60",
+            "backdrop-blur-xl",
+            "border-slate-200/80",
+            "dark:border-slate-900/80",
+            "shadow-md",
+            "dark:shadow-lg",
+            "shadow-slate-100/50",
+            "dark:shadow-slate-950/20",
+            "h-16",
+          );
+          nav?.classList.remove("bg-transparent", "border-transparent", "h-20");
+        } else {
+          nav?.classList.add("bg-transparent", "border-transparent", "h-20");
+          nav?.classList.remove(
+            "bg-white/80",
+            "dark:bg-slate-955/60",
+            "backdrop-blur-xl",
+            "border-slate-200/80",
+            "dark:border-slate-900/80",
+            "shadow-md",
+            "dark:shadow-lg",
+            "shadow-slate-100/50",
+            "dark:shadow-slate-955/20",
+            "h-16",
+          );
+        }
+      });
+
+      // Active Section Highlighting
+      const sections = document.querySelectorAll("section[id]");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      const observerOptions = {
+        root: null,
+        rootMargin: "-30% 0px -60% 0px",
+        threshold: 0,
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute("id");
+            navLinks.forEach((link) => {
+              if (link.getAttribute("data-section") === id) {
+                link.classList.remove("text-slate-500", "dark:text-slate-400");
+                link.classList.add(
+                  "text-primary-600",
+                  "dark:text-primary-400",
+                  "font-extrabold",
+                );
+              } else {
+                link.classList.add("text-slate-500", "dark:text-slate-400");
+                link.classList.remove(
+                  "text-primary-600",
+                  "dark:text-primary-400",
+                  "font-extrabold",
+                );
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      sections.forEach((section) => observer.observe(section));
+
+      // Mobile Menu Trigger
+      const btn = document.getElementById("mobile-menu-btn");
+      const menu = document.getElementById("mobile-menu");
+      btn?.addEventListener("click", () => {
+        menu?.classList.toggle("hidden");
+      });
+      menu?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          menu.classList.add("hidden");
+        });
+      });
+
+      // Loading Screen Removal
+      const loader = document.getElementById("loading-screen");
+      setTimeout(() => {
+        if (loader) {
+          loader.classList.add("opacity-0", "pointer-events-none");
+          setTimeout(() => loader.remove(), 550);
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
