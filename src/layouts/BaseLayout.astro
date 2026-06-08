@@ -264,7 +264,11 @@ const { title = SITE_CONFIG.title, description = SITE_CONFIG.description } =
             class="transition-all duration-300 hover:scale-105 opacity-80 hover:opacity-100 block"
             aria-label="GitHub"
           >
-            <img src="/github.png" alt="GitHub" class="w-5 h-5 object-contain" />
+            <img
+              src="/github.png"
+              alt="GitHub"
+              class="w-5 h-5 object-contain"
+            />
           </a>
           <a
             href={SITE_CONFIG.linkedin}
@@ -273,7 +277,11 @@ const { title = SITE_CONFIG.title, description = SITE_CONFIG.description } =
             class="transition-all duration-300 hover:scale-105 opacity-80 hover:opacity-100 block"
             aria-label="LinkedIn"
           >
-            <img src="/linkedIn.png" alt="LinkedIn" class="w-5 h-5 object-contain" />
+            <img
+              src="/linkedIn.png"
+              alt="LinkedIn"
+              class="w-5 h-5 object-contain"
+            />
           </a>
         </div>
       </div>
@@ -282,8 +290,8 @@ const { title = SITE_CONFIG.title, description = SITE_CONFIG.description } =
     <!-- Interactive navigation controls script -->
     <script>
       // Force page scroll to top on load/refresh
-      if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
       }
       window.scrollTo(0, 0);
 
