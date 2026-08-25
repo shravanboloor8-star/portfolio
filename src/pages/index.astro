@@ -13,6 +13,17 @@ import ProjectsContainer from "../components/ProjectsContainer.jsx";
 import { fetchProjects, fetchExperience, trackPageView } from "../lib/supabase";
 import { SITE_CONFIG } from "../lib/constants";
 
+// Set headers to ensure fresh data on every page reload from Supabase
+try {
+  if (Astro.response && Astro.response.headers) {
+    Astro.response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+    Astro.response.headers.set('Pragma', 'no-cache');
+    Astro.response.headers.set('Expires', '0');
+  }
+} catch (e) {
+  // Ignore header error if immutable
+}
+
 // Track page view
 try {
   await trackPageView("/");
@@ -20,10 +31,21 @@ try {
   console.error("Failed tracking page view:", e);
 }
 
-const dbProjects = await fetchProjects();
-const experiences = await fetchExperience();
+let dbProjects: any[] = [];
+let experiences: any[] = [];
+try {
+  dbProjects = (await fetchProjects()) || [];
+} catch (e) {
+  console.error("Failed fetching projects:", e);
+}
 
-const projects = dbProjects.map((proj) => {
+try {
+  experiences = (await fetchExperience()) || [];
+} catch (e) {
+  console.error("Failed fetching experience:", e);
+}
+
+const projects = (dbProjects || []).filter(Boolean).map((proj) => {
   // Extract tagline and snippet description
   let tagline = "";
   let description = proj.description || "";
