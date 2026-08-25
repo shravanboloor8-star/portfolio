@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",
-    "@astrojs/vercel": "^11.0.8",
+    "@astrojs/vercel": "^10.0.8",
     "@hookform/resolvers": "^5.4.0",
     "@supabase/supabase-js": "^2.107.0",
     "astro": "^6.4.4",
