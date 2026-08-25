@@ -36,6 +36,8 @@ const itemVariants = {
   },
 };
 
+const PREFERRED_CATEGORY_ORDER = ['Frontend', 'Backend', 'Database', 'No-Code', 'Tools'];
+
 export default function TechWall({ skills: dynamicSkills }) {
   // Build skill data structure from dynamic Supabase skills or fallback to static SKILLS
   const skillData = React.useMemo(() => {
@@ -58,8 +60,27 @@ export default function TechWall({ skills: dynamicSkills }) {
     return {};
   }, [dynamicSkills]);
 
-  const categories = Object.keys(skillData);
-  const [selectedCategory, setSelectedCategory] = useState(categories[0] || 'Frontend');
+  // Sort categories by preferred order
+  const categories = React.useMemo(() => {
+    const keys = Object.keys(skillData);
+    return keys.sort((a, b) => {
+      const indexA = PREFERRED_CATEGORY_ORDER.indexOf(a);
+      const indexB = PREFERRED_CATEGORY_ORDER.indexOf(b);
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [skillData]);
+
+  const [selectedCategory, setSelectedCategory] = useState('Frontend');
+
+  // Sync selectedCategory when categories update
+  React.useEffect(() => {
+    if (categories.length > 0 && !categories.includes(selectedCategory)) {
+      setSelectedCategory(categories[0]);
+    }
+  }, [categories, selectedCategory]);
 
   const currentCategoryData = skillData[selectedCategory] || { items: [], itemObjects: [] };
   const currentSkills = currentCategoryData.itemObjects || [];
@@ -113,6 +134,9 @@ export default function TechWall({ skills: dynamicSkills }) {
             const logo = skillObj.logo_url;
             const fallback = skillObj.fallback_emoji || '⚙️';
 
+            const nameLower = (name || '').toLowerCase();
+            const isSmallLogo = nameLower.includes('figma') || nameLower.includes('razorpay');
+
             return (
               <motion.div
                 key={name}
@@ -124,12 +148,12 @@ export default function TechWall({ skills: dynamicSkills }) {
               >
                 {/* Logo and Text */}
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden">
                     {logo ? (
                       <img
                         src={logo}
                         alt={name}
-                        className="w-full h-full object-contain"
+                        className={`w-full h-full object-contain ${isSmallLogo ? 'scale-150 transform' : 'p-0.5'}`}
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                           const fallbackEl = e.currentTarget.nextElementSibling;
