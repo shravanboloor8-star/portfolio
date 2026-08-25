@@ -52,10 +52,8 @@ export type Experience = {
 export type Skill = {
   id: number;
   category: string;
-  category_icon?: string;
   name: string;
-  logo_url?: string | null;
-  fallback_emoji?: string;
+  logo_url: string;
   order_num?: number;
 };
 
