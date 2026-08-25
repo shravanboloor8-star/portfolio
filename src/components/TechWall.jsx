@@ -7,8 +7,13 @@ const CATEGORY_ICONS = {
   react: '⚛️',
   server: '🖥️',
   database: '🗄️',
-  'toggle-left': '🚫', 
+  'toggle-left': '🚫',
   tool: '🔧',
+  Frontend: '⚛️',
+  Backend: '🖥️',
+  Database: '🗄️',
+  'No-Code': '🚫',
+  Tools: '🔧',
 };
 
 // Tech logos mapping - Real logos from public folder with emoji fallbacks

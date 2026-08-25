@@ -52,6 +52,7 @@ export type Experience = {
 export type Skill = {
   id: number;
   category: string;
+  category_icon?: string;
   name: string;
   logo_url: string;
   order_num?: number;
