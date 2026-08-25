@@ -49,6 +49,16 @@ export type Experience = {
   link?: string | null;
 };
 
+export type Skill = {
+  id: number;
+  category: string;
+  category_icon?: string;
+  name: string;
+  logo_url?: string | null;
+  fallback_emoji?: string;
+  order_num?: number;
+};
+
 export type ContactSubmission = {
   id: string;
   name: string;
@@ -187,3 +197,24 @@ export async function fetchExperience() {
     return [];
   }
 }
+
+// Fetch skills from Supabase
+export async function fetchSkills() {
+  try {
+    const { data, error } = await supabase
+      .from('skills')
+      .select('*')
+      .order('order_num', { ascending: true });
+
+    if (error) {
+      console.warn('Error fetching skills from Supabase:', error.message);
+      return [];
+    }
+
+    return (data || []) as Skill[];
+  } catch (error) {
+    console.error('Error fetching skills:', error);
+    return [];
+  }
+}
+

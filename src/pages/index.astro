@@ -10,7 +10,7 @@ import ExperienceSection from "../components/ExperienceSection.jsx";
 import WhatIBuild from "../components/WhatIBuild.jsx";
 import Testimonials from "../components/Testimonials.jsx";
 import ProjectsContainer from "../components/ProjectsContainer.jsx";
-import { fetchProjects, fetchExperience, trackPageView } from "../lib/supabase";
+import { fetchProjects, fetchExperience, fetchSkills, trackPageView } from "../lib/supabase";
 import { SITE_CONFIG } from "../lib/constants";
 
 // Set headers to ensure fresh data on every page reload from Supabase
@@ -33,6 +33,7 @@ try {
 
 let dbProjects: any[] = [];
 let experiences: any[] = [];
+let dbSkills: any[] = [];
 try {
   dbProjects = (await fetchProjects()) || [];
 } catch (e) {
@@ -43,6 +44,12 @@ try {
   experiences = (await fetchExperience()) || [];
 } catch (e) {
   console.error("Failed fetching experience:", e);
+}
+
+try {
+  dbSkills = (await fetchSkills()) || [];
+} catch (e) {
+  console.error("Failed fetching skills:", e);
 }
 
 const projects = (dbProjects || []).filter(Boolean).map((proj) => {
@@ -299,7 +306,7 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
             </p>
           </div>
         </ScrollReveal>
-        <TechWall client:visible />
+        <TechWall client:visible skills={dbSkills} />
       </div>
     </section>
 

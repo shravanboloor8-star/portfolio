@@ -73,11 +73,33 @@ const itemVariants = {
   },
 };
 
-export default function TechWall() {
-  const categories = Object.keys(SKILLS);
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+export default function TechWall({ skills: dynamicSkills }) {
+  // Build skill data structure from dynamic Supabase skills or fallback to static SKILLS
+  const skillData = React.useMemo(() => {
+    if (dynamicSkills && Array.isArray(dynamicSkills) && dynamicSkills.length > 0) {
+      const formatted = {};
+      dynamicSkills.forEach((item) => {
+        const cat = item.category || 'Other';
+        if (!formatted[cat]) {
+          formatted[cat] = {
+            icon: item.category_icon || 'tool',
+            items: [],
+            itemObjects: []
+          };
+        }
+        formatted[cat].items.push(item.name);
+        formatted[cat].itemObjects.push(item);
+      });
+      return formatted;
+    }
+    return SKILLS;
+  }, [dynamicSkills]);
 
-  const currentSkills = SKILLS[selectedCategory]?.items || [];
+  const categories = Object.keys(skillData);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0] || 'Frontend');
+
+  const currentCategoryData = skillData[selectedCategory] || { items: [], itemObjects: [] };
+  const currentSkills = currentCategoryData.itemObjects || [];
 
   return (
     <div className="w-full space-y-12">
@@ -90,7 +112,7 @@ export default function TechWall() {
         viewport={{ once: true }}
       >
         {categories.map((category) => {
-          const iconKey = SKILLS[category]?.icon;
+          const iconKey = skillData[category]?.icon;
           const icon = CATEGORY_ICONS[iconKey] || '🔧';
           const isActive = selectedCategory === category;
 
@@ -124,47 +146,56 @@ export default function TechWall() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {currentSkills.map((skill) => (
-            <motion.div
-              key={skill}
-              className="group p-4 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white/70 dark:bg-slate-900/30 hover:bg-white dark:hover:bg-slate-900/50 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 relative"
-              variants={itemVariants}
-              whileHover={{
-                boxShadow: "0 0 20px rgba(139, 92, 246, 0.15)",
-              }}
-            >
-              {/* Logo and Text */}
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  {TECH_LOGOS[skill]?.logo ? (
-                    <img
-                      src={TECH_LOGOS[skill].logo}
-                      alt={skill}
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        const fallback = e.currentTarget.nextElementSibling;
-                        if (fallback) fallback.style.display = 'block';
-                      }}
-                    />
-                  ) : null}
-                  <span
-                    className={`text-2xl ${TECH_LOGOS[skill]?.logo ? 'hidden' : ''}`}
-                  >
-                    {TECH_LOGOS[skill]?.fallback || '⚙️'}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
-                    {skill}
-                  </h4>
-                </div>
-              </div>
+          {(currentSkills.length > 0
+            ? currentSkills
+            : (currentCategoryData.items || []).map((name) => ({ name }))
+          ).map((skillObj) => {
+            const name = typeof skillObj === 'string' ? skillObj : skillObj.name;
+            const logo = skillObj.logo_url !== undefined ? skillObj.logo_url : TECH_LOGOS[name]?.logo;
+            const fallback = skillObj.fallback_emoji || TECH_LOGOS[name]?.fallback || '⚙️';
 
-              {/* Hover indicator */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary-500/5 via-transparent to-secondary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-            </motion.div>
-          ))}
+            return (
+              <motion.div
+                key={name}
+                className="group p-4 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white/70 dark:bg-slate-900/30 hover:bg-white dark:hover:bg-slate-900/50 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 relative"
+                variants={itemVariants}
+                whileHover={{
+                  boxShadow: "0 0 20px rgba(139, 92, 246, 0.15)",
+                }}
+              >
+                {/* Logo and Text */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    {logo ? (
+                      <img
+                        src={logo}
+                        alt={name}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const fallbackEl = e.currentTarget.nextElementSibling;
+                          if (fallbackEl) fallbackEl.style.display = 'block';
+                        }}
+                      />
+                    ) : null}
+                    <span
+                      className={`text-2xl ${logo ? 'hidden' : ''}`}
+                    >
+                      {fallback}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
+                      {name}
+                    </h4>
+                  </div>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary-500/5 via-transparent to-secondary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              </motion.div>
+            );
+          })}
         </motion.div>
       </AnimatePresence>
 
@@ -180,7 +211,7 @@ export default function TechWall() {
           {categories.map((cat) => (
             <div key={cat} className="text-center p-3 rounded-lg bg-slate-50/50 dark:bg-slate-900/20">
               <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                {SKILLS[cat]?.items?.length || 0}
+                {skillData[cat]?.items?.length || skillData[cat]?.itemObjects?.length || 0}
               </div>
               <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mt-1">
                 {cat}

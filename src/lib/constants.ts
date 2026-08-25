@@ -42,36 +42,6 @@ export const SKILLS = {
   }
 };
 
-export const EXPERIENCE = [
-  {
-    title: 'Founder & Full-Stack Developer',
-    company: 'Healthy Mart',
-    period: '2024 - Present',
-    description: 'Building health-focused e-commerce platform from concept to production',
-    highlights: ['React + TanStack', 'Supabase Backend', 'AI Product Discovery', 'Real-time Inventory']
-  },
-  {
-    title: 'Founder & Full-Stack Developer',
-    company: 'Skypay',
-    period: '2024 - Present',
-    description: 'Developing modern fintech platform for international payments',
-    highlights: ['Django Backend', 'Antigravity AI Integration', 'Real-time Transactions', 'Multi-currency Support']
-  },
-  {
-    title: 'Senior Frontend Developer',
-    company: 'Cake Capital',
-    period: '2023 - Present',
-    description: 'Building features for digital banking platform',
-    highlights: ['React Components', 'Admin Dashboards', 'Payment Integration', 'User Experience']
-  },
-  {
-    title: 'Frontend Developer',
-    company: 'Medora',
-    period: '2023 - 2024',
-    description: 'Developed healthcare provider platform',
-    highlights: ['TanStack Architecture', 'Appointment System', 'Responsive Design']
-  }
-];
 
 export const SOCIAL_LINKS = [
   { label: 'LinkedIn', url: SITE_CONFIG.linkedin, icon: 'linkedin' },
