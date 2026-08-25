@@ -19,28 +19,6 @@ export const NAVIGATION = [
   { label: 'Contact', href: '/#contact', icon: 'mail' },
 ];
 
-export const SKILLS = {
-  'Frontend': {
-    icon: 'react',
-    items: ['React.js', 'TanStack', 'Astro', 'Tailwind CSS', 'shadcn/ui', 'Next.js']
-  },
-  'Backend': {
-    icon: 'server',
-    items: ['REST APIs', 'Webhooks', 'Authentication', 'Make', 'Automation' ]
-  },
-  'Database': {
-    icon: 'database',
-    items: ['Supabase', 'PostgreSQL', 'Airtable', 'Firebase']
-  },
-  'No-Code': {
-    icon: 'toggle-left',
-    items: ['Bubble.io', 'Xano', 'Framer', 'Webflow', 'Make']
-  },
-  'Tools': {
-    icon: 'tool',
-    items: ['Vercel', 'GitHub', 'Stripe', 'RazorPay', 'ShipRocket', 'VS Code', 'Figma', 'Supabase CLI', 'Docker']
-  }
-};
 
 
 export const SOCIAL_LINKS = [

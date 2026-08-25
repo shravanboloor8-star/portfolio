@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SKILLS } from '../lib/constants';
 
 // Category icon helper
 const CATEGORY_ICONS = {
@@ -14,47 +13,6 @@ const CATEGORY_ICONS = {
   Database: '🗄️',
   'No-Code': '🚫',
   Tools: '🔧',
-};
-
-// Tech logos mapping - Real logos from public folder with emoji fallbacks
-const TECH_LOGOS = {
-  // Frontend Frameworks & Libraries
-  'React.js': { logo: '/React.png', fallback: '⚛️' },
-  'Next.js': { logo: '/nextJS.svg', fallback: '▲' },
-  'Astro': { logo: '/astro.jpg', fallback: '🚀' },
-  'Tailwind CSS': { logo: '/Tailwind.png', fallback: '🎨' },
-  'TanStack': { logo: '/tanstack.png', fallback: '🔄' },
-  'shadcn/ui': { logo: '/shadcn.png', fallback: '🎭' },
-  // Backend
-  'Django': { logo: null, fallback: '🐍' },
-  'REST APIs': { logo: '/restAPI.jpg', fallback: '🔌' },
-  'Stripe': { logo: '/stripe.svg', fallback: '💳' },
-  'Authentication': { logo: 'authentication.png', fallback: '🔐' },
-  'Webhooks': { logo: '/webhook.webp', fallback: '⚡' },
-
-  // Database
-  'Supabase': { logo: '/supabase.webp', fallback: '🟢' },
-  'Supabase CLI': { logo: '/supabase.webp', fallback: '🟢' },
-  'PostgreSQL': { logo: '/Postgresql.png', fallback: '🐘' },
-  'Airtable': { logo: '/airtable.png', fallback: ' ' },
-  'Firebase': {logo:'firebase.png',fallback:' '},
-
-  // No-Code Platforms
-  'Bubble.io': { logo: '/Bubble.png', fallback: '🫧' },
-  'Bubble Development': { logo: '/Bubble.png', fallback: '🫧' },
-  'Xano': { logo: '/xano.jpeg', fallback: '⚡' },
-  'Webflow': { logo: '/webflow.webp', fallback: '🌐' },
-  'Framer': { logo: '/framer.svg', fallback: '📐' },
-  'Make': { logo: '/make.png', fallback: '🔗' },
-
-  // Development Tools & Platforms
-  'Vercel': { logo: null, fallback: '▲' },
-  'GitHub': { logo: '/github.png', fallback: '🐙' },
-  'VS Code': { logo: '/vs code.png', fallback: '💻' },
-  'Figma': { logo: '/figma.png', fallback: '🎨' },
-  'Docker': { logo: null, fallback: '🐳' },
-  'RazorPay': { logo: '/Razorpay.png', fallback: '📦' },
-  'ShipRocket': { logo: '/shiprocket.jpeg', fallback: '📦' },
 };
 
 const containerVariants = {
@@ -97,7 +55,7 @@ export default function TechWall({ skills: dynamicSkills }) {
       });
       return formatted;
     }
-    return SKILLS;
+    return {};
   }, [dynamicSkills]);
 
   const categories = Object.keys(skillData);
@@ -117,8 +75,7 @@ export default function TechWall({ skills: dynamicSkills }) {
         viewport={{ once: true }}
       >
         {categories.map((category) => {
-          const iconKey = skillData[category]?.icon;
-          const icon = CATEGORY_ICONS[iconKey] || '🔧';
+          const icon = CATEGORY_ICONS[category] || '🔧';
           const isActive = selectedCategory === category;
 
           return (
@@ -151,13 +108,9 @@ export default function TechWall({ skills: dynamicSkills }) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {(currentSkills.length > 0
-            ? currentSkills
-            : (currentCategoryData.items || []).map((name) => ({ name }))
-          ).map((skillObj) => {
-            const name = typeof skillObj === 'string' ? skillObj : skillObj.name;
-            const logo = skillObj.logo_url !== undefined ? skillObj.logo_url : TECH_LOGOS[name]?.logo;
-            const fallback = skillObj.fallback_emoji || TECH_LOGOS[name]?.fallback || '⚙️';
+          {currentSkills.map((skillObj) => {
+            const name = skillObj.name;
+            const logo = skillObj.logo_url;
 
             return (
               <motion.div
