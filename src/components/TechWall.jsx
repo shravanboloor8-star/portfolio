@@ -111,6 +111,7 @@ export default function TechWall({ skills: dynamicSkills }) {
           {currentSkills.map((skillObj) => {
             const name = skillObj.name;
             const logo = skillObj.logo_url;
+            const fallback = skillObj.fallback_emoji || '⚙️';
 
             return (
               <motion.div
