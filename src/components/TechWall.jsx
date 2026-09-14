@@ -182,27 +182,6 @@ export default function TechWall({ skills: dynamicSkills }) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Stats Footer */}
-      <motion.div
-        className="pt-6 border-t border-slate-200 dark:border-slate-800"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        viewport={{ once: true }}
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 max-w-4xl mx-auto">
-          {categories.map((cat) => (
-            <div key={cat} className="text-center p-3 rounded-lg bg-slate-50/50 dark:bg-slate-900/20">
-              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                {skillData[cat]?.items?.length || skillData[cat]?.itemObjects?.length || 0}
-              </div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mt-1">
-                {cat}
-              </div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
     </div>
   );
 }
