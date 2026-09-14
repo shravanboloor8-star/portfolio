@@ -10,15 +10,23 @@ import ExperienceSection from "../components/ExperienceSection.jsx";
 import WhatIBuild from "../components/WhatIBuild.jsx";
 import Testimonials from "../components/Testimonials.jsx";
 import ProjectsContainer from "../components/ProjectsContainer.jsx";
-import { fetchProjects, fetchExperience, fetchSkills, trackPageView } from "../lib/supabase";
+import {
+  fetchProjects,
+  fetchExperience,
+  fetchSkills,
+  trackPageView,
+} from "../lib/supabase";
 import { SITE_CONFIG } from "../lib/constants";
 
 // Set headers to ensure fresh data on every page reload from Supabase
 try {
   if (Astro.response && Astro.response.headers) {
-    Astro.response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
-    Astro.response.headers.set('Pragma', 'no-cache');
-    Astro.response.headers.set('Expires', '0');
+    Astro.response.headers.set(
+      "Cache-Control",
+      "no-cache, no-store, must-revalidate, max-age=0",
+    );
+    Astro.response.headers.set("Pragma", "no-cache");
+    Astro.response.headers.set("Expires", "0");
   }
 } catch (e) {
   // Ignore header error if immutable
@@ -137,11 +145,11 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
             <h1
               class="text-4xl sm:text-6xl font-display font-extrabold tracking-tight leading-[1.1] text-slate-900 dark:text-slate-100 max-w-2xl mb-6"
             >
-              Product Developer & Founding Engineer
+              Building Web Applications
               <span
                 class="block bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-500 dark:from-primary-400 dark:via-secondary-400 dark:to-accent-400 bg-clip-text text-transparent"
               >
-                Building Web Products That Scale
+                That Scale
               </span>
             </h1>
           </ScrollReveal>
@@ -156,11 +164,13 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
           </ScrollReveal>
 
           <ScrollReveal client:load delay={0.5} direction="up">
-           <p
-            class="text-lg sm:text-xl text-slate-700 dark:text-slate-350 font-semibold mb-3 max-w-xl font-display"
-          >
-            Founder & developing Engineer • 11+ shipped products across fintech, marketplace, SaaS & e-commerce
-          </p>
+            <p
+              class="text-slate-650 dark:text-slate-400 text-sm sm:text-base max-w-xl leading-relaxed mb-8"
+            >
+              I build web applications across fintech, marketplace, SaaS,
+              healthcare, and e-commerce. 11+ shipped products. Proven ability
+              to scale.
+            </p>
           </ScrollReveal>
 
           <!-- Hero Buttons -->
@@ -558,16 +568,28 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
                       > Consulting
                     </li>
                     <li class="flex items-center gap-2">
-                      <span class="text-primary-600 dark:text-primary-400 font-bold">•</span> Co-Founder / Technical Founder Roles
+                      <span
+                        class="text-primary-600 dark:text-primary-400 font-bold"
+                        >•</span
+                      > Co-Founder / Technical Founder Roles
                     </li>
                     <li class="flex items-center gap-2">
-                      <span class="text-primary-600 dark:text-primary-400 font-bold">•</span> Founding Engineer / Lead Developer
+                      <span
+                        class="text-primary-600 dark:text-primary-400 font-bold"
+                        >•</span
+                      > Founding Engineer / Lead Developer
                     </li>
                     <li class="flex items-center gap-2">
-                      <span class="text-primary-600 dark:text-primary-400 font-bold">•</span> Product Development
+                      <span
+                        class="text-primary-600 dark:text-primary-400 font-bold"
+                        >•</span
+                      > Product Development
                     </li>
                     <li class="flex items-center gap-2">
-                      <span class="text-primary-600 dark:text-primary-400 font-bold">•</span> Product Strategy & Consulting
+                      <span
+                        class="text-primary-600 dark:text-primary-400 font-bold"
+                        >•</span
+                      > Product Strategy & Consulting
                     </li>
                   </ul>
                 </div>
