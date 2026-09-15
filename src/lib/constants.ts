@@ -6,7 +6,7 @@ export const SITE_CONFIG = {
   phone: '+91-9483693865',
   location: 'Udupi, Karnataka, India',
   timezone: 'IST (UTC +5:30)',
-  url: 'https://shravanboloor.com',
+  url: 'https://shravan.space',
   github: 'https://github.com/shravan27090',
   linkedin: 'https://www.linkedin.com/in/shravan-boloor-3a669a16a/',
   twitter: 'https://twitter.com/shravanboloor',
