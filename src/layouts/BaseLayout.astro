@@ -45,63 +45,39 @@ const { title = SITE_CONFIG.title, description = SITE_CONFIG.description } =
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${SITE_CONFIG.url}/shravan_profile.png`} />
 
-    <!-- Google Fonts -->
+    <!-- Preload Hero Avatar for Instant LCP -->
+    <link
+      rel="preload"
+      as="image"
+      href="/shravan_profile_avatar.avif"
+      type="image/avif"
+      fetchpriority="high"
+    />
+
+    <!-- Google Fonts (Non-render-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap"
+      />
+    </noscript>
 
     <!-- Force light mode on document element -->
     <script is:inline>
       document.documentElement.classList.remove("dark");
     </script>
-    <style>
-      @keyframes progress-fill {
-        0% {
-          transform: scaleX(0);
-        }
-        100% {
-          transform: scaleX(1);
-        }
-      }
-      .progress-bar-fill {
-        animation: progress-fill 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-      }
-    </style>
   </head>
   <body
     class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans transition-colors duration-300 antialiased overflow-x-hidden"
   >
-    <!-- Premium Loader -->
-    <div
-      id="loading-screen"
-      class="fixed inset-0 z-[100] bg-slate-50 flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out select-none"
-    >
-      <div class="flex flex-col items-center gap-6">
-        <div
-          class="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-extrabold shadow-[0_0_35px_rgba(139,92,246,0.15)] animate-pulse-slow"
-        >
-          <img
-            src="shravan_profile.png"
-            alt="shravan_profile"
-            class="w-full h-full rounded-full animate-rotate"
-          />
-        </div>
-        <p
-          class="text-[10px] font-bold tracking-widest text-slate-500 font-display uppercase animate-pulse"
-        >
-          Loading Portfolio...
-        </p>
-        <div class="w-48 h-[2px] bg-slate-200 rounded-full overflow-hidden">
-          <div
-            class="progress-bar-fill w-full h-full bg-gradient-to-r from-primary-500 to-secondary-500 origin-left"
-          >
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Premium Sticky Navbar -->
     <header
@@ -388,14 +364,6 @@ const { title = SITE_CONFIG.title, description = SITE_CONFIG.description } =
         });
       });
 
-      // Loading Screen Removal
-      const loader = document.getElementById("loading-screen");
-      setTimeout(() => {
-        if (loader) {
-          loader.classList.add("opacity-0", "pointer-events-none");
-          setTimeout(() => loader.remove(), 550);
-        }
-      }, 1000);
     </script>
   </body>
 </html>

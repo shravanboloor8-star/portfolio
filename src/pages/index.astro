@@ -18,46 +18,47 @@ import {
 } from "../lib/supabase";
 import { SITE_CONFIG } from "../lib/constants";
 
-// Set headers to ensure fresh data on every page reload from Supabase
+// Set edge caching headers with Stale-While-Revalidate for blazingly fast TTFB
 try {
   if (Astro.response && Astro.response.headers) {
     Astro.response.headers.set(
       "Cache-Control",
-      "no-cache, no-store, must-revalidate, max-age=0",
+      "public, s-maxage=600, stale-while-revalidate=86400",
     );
-    Astro.response.headers.set("Pragma", "no-cache");
-    Astro.response.headers.set("Expires", "0");
   }
 } catch (e) {
   // Ignore header error if immutable
 }
 
-// Track page view
+// Track page view asynchronously without delaying SSR response
 try {
-  await trackPageView("/");
+  trackPageView("/").catch(() => {});
 } catch (e) {
-  console.error("Failed tracking page view:", e);
+  // Ignore analytics tracking errors
 }
 
 let dbProjects: any[] = [];
 let experiences: any[] = [];
 let dbSkills: any[] = [];
-try {
-  dbProjects = (await fetchProjects()) || [];
-} catch (e) {
-  console.error("Failed fetching projects:", e);
-}
 
 try {
-  experiences = (await fetchExperience()) || [];
-} catch (e) {
-  console.error("Failed fetching experience:", e);
-}
+  const [projectsRes, expRes, skillsRes] = await Promise.allSettled([
+    fetchProjects(),
+    fetchExperience(),
+    fetchSkills(),
+  ]);
 
-try {
-  dbSkills = (await fetchSkills()) || [];
+  if (projectsRes.status === "fulfilled" && projectsRes.value) {
+    dbProjects = projectsRes.value;
+  }
+  if (expRes.status === "fulfilled" && expRes.value) {
+    experiences = expRes.value;
+  }
+  if (skillsRes.status === "fulfilled" && skillsRes.value) {
+    dbSkills = skillsRes.value;
+  }
 } catch (e) {
-  console.error("Failed fetching skills:", e);
+  console.error("Failed fetching Supabase data:", e);
 }
 
 const projects = (dbProjects || []).filter(Boolean).map((proj) => {
@@ -141,7 +142,7 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
       >
         <!-- Hero Text (Left) -->
         <div class="lg:col-span-7 space-y-8 text-left">
-          <ScrollReveal client:load delay={0.1} direction="up">
+          <div class="animate-slide-up" style="animation-delay: 0.1s; animation-fill-mode: both;">
             <h1
               class="text-4xl sm:text-6xl font-display font-extrabold tracking-tight leading-[1.1] text-slate-900 dark:text-slate-100 max-w-2xl mb-6"
             >
@@ -152,18 +153,18 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
                 That Scale
               </span>
             </h1>
-          </ScrollReveal>
+          </div>
 
-          <ScrollReveal client:load delay={0.3} direction="up">
+          <div class="animate-slide-up" style="animation-delay: 0.25s; animation-fill-mode: both;">
             <p
               class="text-lg sm:text-xl text-slate-700 dark:text-slate-350 font-semibold mb-3 max-w-xl font-display"
             >
               Frontend Engineer specializing in React, TanStack, Bubble, and
               Product Development.
             </p>
-          </ScrollReveal>
+          </div>
 
-          <ScrollReveal client:load delay={0.5} direction="up">
+          <div class="animate-slide-up" style="animation-delay: 0.4s; animation-fill-mode: both;">
             <p
               class="text-slate-650 dark:text-slate-400 text-sm sm:text-base max-w-xl leading-relaxed mb-8"
             >
@@ -171,10 +172,10 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
               healthcare, and e-commerce. 11+ shipped products. Proven ability
               to scale.
             </p>
-          </ScrollReveal>
+          </div>
 
           <!-- Hero Buttons -->
-          <ScrollReveal client:load delay={0.7} direction="up">
+          <div class="animate-slide-up" style="animation-delay: 0.55s; animation-fill-mode: both;">
             <div class="flex flex-wrap gap-4 pt-2">
               <a
                 href="#projects"
@@ -214,14 +215,12 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
                 </svg>
               </a>
             </div>
-          </ScrollReveal>
+          </div>
         </div>
 
         <!-- Hero Avatar Card (Right) -->
-        <div class="lg:col-span-5 w-full flex items-center justify-center">
-          <ScrollReveal client:load delay={0.4} direction="right">
-            <FloatingProfile client:load />
-          </ScrollReveal>
+        <div class="lg:col-span-5 w-full flex items-center justify-center animate-fade-in" style="animation-delay: 0.3s; animation-fill-mode: both;">
+          <FloatingProfile client:idle />
         </div>
       </div>
     </section>
@@ -603,7 +602,7 @@ const projects = (dbProjects || []).filter(Boolean).map((proj) => {
               <div
                 class="bg-white dark:bg-slate-900/30 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-200/5 shadow-sm hover:shadow-md dark:hover:border-slate-800 transition-all duration-500"
               >
-                <ContactForm client:load />
+                <ContactForm client:visible />
               </div>
             </ScrollReveal>
           </div>

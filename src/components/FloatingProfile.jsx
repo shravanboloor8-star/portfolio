@@ -54,12 +54,19 @@ export default function FloatingProfile() {
         {/* Profile Image with subtle scale on card hover */}
         <div className="relative w-28 h-28 rounded-full bg-gradient-to-tr from-primary-500 via-secondary-500 to-accent-500 p-[2px] mb-5 shadow-lg shadow-primary-500/10 group-hover:shadow-primary-500/25 transition-all duration-500">
           <div className="w-full h-full rounded-full bg-white dark:bg-slate-955 overflow-hidden flex items-center justify-center">
-            <img 
-              src="/shravan_profile.png"
-              alt="Shravan Boloor Profile"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
+            <picture className="w-full h-full">
+              <source srcSet="/shravan_profile_avatar.avif" type="image/avif" />
+              <img 
+                src="/shravan_profile_avatar.png"
+                alt="Shravan Boloor Profile"
+                width="112"
+                height="112"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
           </div>
         </div>
 
